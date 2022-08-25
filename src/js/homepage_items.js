@@ -1,13 +1,5 @@
 import { Item, updateQuality } from '../inventory/gilded_rose.js';
 
-if(true){
-  if(true){
-  if(true){
-    const myVar="some value";
-}
-}
-}
-
 const getNewItems = () => [
   new Item('+5 Dexterity Vest', 10, 20),
   new Item('Aged Brie', 2, 0),
