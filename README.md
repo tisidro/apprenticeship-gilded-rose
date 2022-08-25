@@ -49,3 +49,4 @@ npm start
 Sources:
   <http://iamnotmyself.com/2011/02/13/refactor-this-the-gilded-rose-kata/>
   <https://github.com/professor/GildedRose>
+test for code climate
