@@ -9,7 +9,7 @@ export function Item(name, sell_in, quality) {
 * Update inventory
 * @param {Item[]} items - an array of Items representing the inventory to be updated
 * Example usage:
-
+3
 const items = [
   new Item('+5 Dexterity Vest', 10, 20),
   new Item('Aged Brie', 2, 0),
