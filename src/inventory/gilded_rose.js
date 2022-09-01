@@ -22,10 +22,14 @@ const items = [
 updateQuality(items);
 */
 export function updateQuality(items) {
-  for (var i = 0; i < items.length; i++) {
-    if (items[i].name != 'Aged Brie' && items[i].name != 'Backstage passes to a TAFKAL80ETC concert') {
+  const constantQuality =['Sulfuras, Hand of Ragnaros'];
+  const improvesWithAge = ['Aged Brie', 'Backstage passes to a TAFKAL80ETC concert']
+
+  for (let i = 0; i < items.length; i++) {
+    
+    if (!improvesWithAge.includes(items[i].name)) {
       if (items[i].quality > 0) {
-        if (items[i].name != 'Sulfuras, Hand of Ragnaros') {
+        if (!constantQuality.includes(items[i].name)) {
           items[i].quality = items[i].quality - 1
         }
       }
