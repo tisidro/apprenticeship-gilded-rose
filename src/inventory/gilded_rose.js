@@ -21,9 +21,13 @@ const items = [
 
 updateQuality(items);
 */
+
 export function updateQuality(items) {
+  //--variables --//
   const constantQuality =['Sulfuras, Hand of Ragnaros'];
   const improvesWithAge = ['Aged Brie', 'Backstage passes to a TAFKAL80ETC concert']
+
+  //--helper functions--//
 
   for (let i = 0; i < items.length; i++) {
     
@@ -34,6 +38,9 @@ export function updateQuality(items) {
         }
       }
     } else {
+      function isMaxQuality(quality){
+        return quality >=50;
+      }
       if (items[i].quality < 50) {
         items[i].quality = items[i].quality + 1
         if (items[i].name == 'Backstage passes to a TAFKAL80ETC concert') {
@@ -50,16 +57,21 @@ export function updateQuality(items) {
         }
       }
     }
-    if (items[i].name != 'Sulfuras, Hand of Ragnaros') {
+    if (items[i].name != constantQuality.includes(items[i].name)) {
       items[i].sell_in = items[i].sell_in - 1;
-    }
-    if (items[i].sell_in < 0) {
-      if (items[i].name != 'Aged Brie') {
+    } 
+    const isExpired = () => {
+//check for being expired or not--if (not expired)
+if (items[i].sell_in<0){//is sell-in less than zero (expired)--true/false
+return true; 
+}
+} 
+
+    if (isExpired()) {
+      if (!constantQuality.includes(items[i].name)||improvesWithAge.includes(items[i].name)) {
         if (items[i].name != 'Backstage passes to a TAFKAL80ETC concert') {
           if (items[i].quality > 0) {
-            if (items[i].name != 'Sulfuras, Hand of Ragnaros') {
               items[i].quality = items[i].quality - 1
-            }
           }
         } else {
           items[i].quality = items[i].quality - items[i].quality
