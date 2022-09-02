@@ -24,55 +24,50 @@ updateQuality(items);
 
 export function updateQuality(items) {
   //--variables --//
-  const constantQuality =['Sulfuras, Hand of Ragnaros'];
-  const improvesWithAge = ['Aged Brie', 'Backstage passes to a TAFKAL80ETC concert']
+  const itemHasConstantQuality =['Sulfuras, Hand of Ragnaros'];
+  const itemImprovesWithAge = ['Aged Brie', 'Backstage passes to a TAFKAL80ETC concert']
 
-  //--helper functions--//
-
+  
   for (let i = 0; i < items.length; i++) {
-    
-    if (!improvesWithAge.includes(items[i].name)) {
+      //--helper functions--//
+  const itemHasMaxQuality = (item) => {
+        return items[i].quality >=50;
+      }
+
+    if (!itemImprovesWithAge.includes(items[i].name)) {
       if (items[i].quality > 0) {
-        if (!constantQuality.includes(items[i].name)) {
+        if (!itemHasConstantQuality.includes(items[i].name)) {
           items[i].quality = items[i].quality - 1
         }
       }
     } else {
-      function isMaxQuality(quality){
-        return quality >=50;
-      }
-      if (items[i].quality < 50) {
+     
+      if (!itemHasMaxQuality()) {
         items[i].quality = items[i].quality + 1
         if (items[i].name == 'Backstage passes to a TAFKAL80ETC concert') {
-          if (items[i].sell_in < 11) {
-            if (items[i].quality < 50) {
+          if (items[i].sell_in < 11 && !itemHasMaxQuality()) {
               items[i].quality = items[i].quality + 1
-            }
           }
-          if (items[i].sell_in < 6) {
-            if (items[i].quality < 50) {
+          if (items[i].sell_in < 6 && !itemHasMaxQuality()) {
               items[i].quality = items[i].quality + 1
-            }
           }
         }
       }
     }
-    if (items[i].name != constantQuality.includes(items[i].name)) {
+    if (items[i].name != itemHasConstantQuality.includes(items[i].name)) {
       items[i].sell_in = items[i].sell_in - 1;
     } 
-    const isExpired = () => {
+    const itemIsExpired = (item) => {
 //check for being expired or not--if (not expired)
 if (items[i].sell_in<0){//is sell-in less than zero (expired)--true/false
 return true; 
 }
 } 
 
-    if (isExpired()) {
-      if (!constantQuality.includes(items[i].name)||improvesWithAge.includes(items[i].name)) {
-        if (items[i].name != 'Backstage passes to a TAFKAL80ETC concert') {
-          if (items[i].quality > 0) {
+    if (itemIsExpired()) {
+      if (!itemHasConstantQuality.includes(items[i].name)||itemImprovesWithAge.includes(items[i].name)) {
+        if (items[i].name != 'Backstage passes to a TAFKAL80ETC concert' && items[i].quality > 0) {
               items[i].quality = items[i].quality - 1
-          }
         } else {
           items[i].quality = items[i].quality - items[i].quality
         }
