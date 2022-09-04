@@ -1,10 +1,3 @@
-// Item constructor. DO NOT MODIFY OR THE GOBLIN WILL EAT YOU!
-export function Item(name, sell_in, quality) {
-  this.name = name;
-  this.sell_in = sell_in;
-  this.quality = quality;
-}
-
 /*
 * Update inventory
 * @param {Item[]} items - an array of Items representing the inventory to be updated
@@ -22,6 +15,13 @@ const items = [
 updateQuality(items);
 */
 
+// Item constructor. DO NOT MODIFY OR THE GOBLIN WILL EAT YOU!
+export function Item(name, sell_in, quality) {
+  this.name = name;
+  this.sell_in = sell_in;
+  this.quality = quality;
+}
+
 export function updateQuality(items) {
   //--variables --//
   const itemHasConstantQuality =['Sulfuras, Hand of Ragnaros'];
@@ -34,24 +34,31 @@ export function updateQuality(items) {
         return items[i].quality >=50;
       }
 
+    const qualityDecreasesByOne = (item) =>{
+      return items[i].quality = items[i].quality - 1
+    }
+
+    const qualityIncreasesByOne = (item) =>{
+      return items[i].quality = items[i].quality + 1
+    }
+
     if (!itemImprovesWithAge.includes(items[i].name)) {
-      if (items[i].quality > 0) {
-        if (!itemHasConstantQuality.includes(items[i].name)) {
-          items[i].quality = items[i].quality - 1
+      if (items[i].quality > 0 && !itemHasConstantQuality.includes(items[i].name)) {
+        qualityDecreasesByOne(items)
         }
-      }
-    } else {
-     
+      
+    } else{
+
       if (!itemHasMaxQuality()) {
-        items[i].quality = items[i].quality + 1
+        
         if (items[i].name == 'Backstage passes to a TAFKAL80ETC concert') {
-          if (items[i].sell_in < 11 && !itemHasMaxQuality()) {
+          if (items[i].sell_in < 11) {
+              qualityIncreasesByOne(items)
+          }
+          if (items[i].sell_in < 6) {
               items[i].quality = items[i].quality + 1
           }
-          if (items[i].sell_in < 6 && !itemHasMaxQuality()) {
-              items[i].quality = items[i].quality + 1
-          }
-        }
+        } qualityIncreasesByOne(items)
       }
     }
     if (items[i].name != itemHasConstantQuality.includes(items[i].name)) {
@@ -67,13 +74,13 @@ return true;
     if (itemIsExpired()) {
       if (!itemHasConstantQuality.includes(items[i].name)||itemImprovesWithAge.includes(items[i].name)) {
         if (items[i].name != 'Backstage passes to a TAFKAL80ETC concert' && items[i].quality > 0) {
-              items[i].quality = items[i].quality - 1
+              qualityDecreasesByOne(items)
         } else {
           items[i].quality = items[i].quality - items[i].quality
         }
       } else {
         if (items[i].quality < 50) {
-          items[i].quality = items[i].quality + 1
+          qualityIncreasesByOne(items)
         }
       }
     }
