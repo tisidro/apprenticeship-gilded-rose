@@ -80,7 +80,7 @@ describe('updateQuality', () => {
   });
 
   // quality drops to zero after the concert
-  it('increase quality of backstage passes with decreased sell_in', () => {
+  it('decrease quality of backstage passes to zero after concert', () => {
     const standardItem = new Item('Backstage passes to a TAFKAL80ETC concert', 0, 20);
     updateQuality([standardItem]);
     expect(standardItem.quality).toBe(0);
