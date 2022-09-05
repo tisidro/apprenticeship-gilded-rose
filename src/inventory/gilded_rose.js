@@ -23,14 +23,16 @@ export function Item(name, sell_in, quality) {
 }
 
 export function updateQuality(items) {
-  //--variables --//
+  //--------variables -------//
   const itemHasConstantQuality =['Sulfuras, Hand of Ragnaros'];
   const itemImprovesWithAge = ['Aged Brie', 'Backstage passes to a TAFKAL80ETC concert']
 
-  
+//----iterator over array of const items ------/ / 
   for (let i = 0; i < items.length; i++) {
-      //--helper functions--//
-  const itemHasMaxQuality = (item) => {
+      
+    //--------helper functions---------//
+  
+      const itemHasMaxQuality = (item) => {
         return items[i].quality >=50;
       }
 
@@ -42,16 +44,14 @@ export function updateQuality(items) {
       return items[i].quality = items[i].quality + 1
     }
 
-    if (!itemImprovesWithAge.includes(items[i].name)) {
+    function normalItemBehavior(){
       if (items[i].quality > 0 && !itemHasConstantQuality.includes(items[i].name)) {
         qualityDecreasesByOne(items)
-        }
-      
-    } else{
+    } 
+    }
 
-      if (!itemHasMaxQuality()) {
-        
-        if (items[i].name == 'Backstage passes to a TAFKAL80ETC concert') {
+    function backstagePassesQuality(){
+     if (items[i].name == 'Backstage passes to a TAFKAL80ETC concert') {
           if (items[i].sell_in < 11) {
               qualityIncreasesByOne(items)
           }
@@ -59,30 +59,33 @@ export function updateQuality(items) {
               items[i].quality = items[i].quality + 1
           }
         } qualityIncreasesByOne(items)
+}
+
+//------------conditional logic-----------//
+    if (!itemImprovesWithAge.includes(items[i].name)) {
+      normalItemBehavior();
+        }
+      
+    else{
+      if (!itemHasMaxQuality()) {
+        backstagePassesQuality();
       }
     }
+
     if (items[i].name != itemHasConstantQuality.includes(items[i].name)) {
       items[i].sell_in = items[i].sell_in - 1;
     } 
-    const itemIsExpired = (item) => {
-//check for being expired or not--if (not expired)
-if (items[i].sell_in<0){//is sell-in less than zero (expired)--true/false
-return true; 
-}
-} 
 
-    if (itemIsExpired()) {
-      if (!itemHasConstantQuality.includes(items[i].name)||itemImprovesWithAge.includes(items[i].name)) {
-        if (items[i].name != 'Backstage passes to a TAFKAL80ETC concert' && items[i].quality > 0) {
-              qualityDecreasesByOne(items)
-        } else {
+    const itemIsExpired = (item) => {
+    if (items[i].sell_in<0){
+        return true; 
+    }
+  } 
+
+    if (itemIsExpired() && !itemHasConstantQuality.includes(items[i].name)) {
+      //at less than zero item quality does not change, as it has expired
           items[i].quality = items[i].quality - items[i].quality
         }
-      } else {
-        if (items[i].quality < 50) {
-          qualityIncreasesByOne(items)
-        }
-      }
+      } 
     }
-  }
-}
+  
