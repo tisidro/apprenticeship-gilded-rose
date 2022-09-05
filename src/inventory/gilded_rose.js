@@ -30,8 +30,7 @@ export function updateQuality(items) {
 //----iterator over array of const items ------/ / 
   for (let i = 0; i < items.length; i++) {
       
-    //--------helper functions---------//
-  
+    //-----------helper functions---------//
       const itemHasMaxQuality = (item) => {
         return items[i].quality >=50;
       }
@@ -44,6 +43,7 @@ export function updateQuality(items) {
       return items[i].quality = items[i].quality + 1
     }
 
+    //it should act like a "normal item"  and decrease by one as it gets older (sell_in decreases)
     function normalItemBehavior(){
       if (items[i].quality > 0 && !itemHasConstantQuality.includes(items[i].name)) {
         qualityDecreasesByOne(items)
@@ -56,22 +56,25 @@ export function updateQuality(items) {
               qualityIncreasesByOne(items)
           }
           if (items[i].sell_in < 6) {
-              items[i].quality = items[i].quality + 1
+              qualityIncreasesByOne(items)
           }
         } qualityIncreasesByOne(items)
 }
 
 //------------conditional logic-----------//
-    if (!itemImprovesWithAge.includes(items[i].name)) {
+
+//when it's not Aged Brie or backstage passes, act like a "normal item" and decrease quality by 1
+if (!itemImprovesWithAge.includes(items[i].name)) {
       normalItemBehavior();
         }
-      
+  
     else{
+    //if it's not >= 50, give it the quality of a backstage pass    (see above)
       if (!itemHasMaxQuality()) {
         backstagePassesQuality();
       }
     }
-
+    //if item is not Sulfuras, decrease its quality by 1
     if (items[i].name != itemHasConstantQuality.includes(items[i].name)) {
       items[i].sell_in = items[i].sell_in - 1;
     } 
