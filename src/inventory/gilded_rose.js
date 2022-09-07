@@ -61,14 +61,20 @@ export function updateQuality(items) {
     }
 
     //where items expire
-    //working here first because it's a long block and I see more logic here at the bottom
+    //Pull out items that change quality & create methods to do this instead of inline code (extract them)
+    qualityIncreaser = (item) =>{
+      item.quality = item.quality + 1
+    }
+
+    qualityDecreaser  = (item) =>{
+       item.quality = item.quality - 1
+    }
+
     if (item.sell_in < 0) {
 
-      //remove confusing negative condition, write a conditional for when it IS aged brie. 
-      //The last else statement corresponds w/ that so move it up.
       if (agedBrie.includes(items[i].name)) {
         if (item.quality < 50) {
-          item.quality = item.quality + 1
+        qualityIncreaser(item)
         }
       }
 
@@ -83,12 +89,11 @@ export function updateQuality(items) {
         }
         else {
             if (item.quality > 0) {
-            // if (!constantQuality.includes(items[i].name)) {
-              item.quality = item.quality - 1
+             qualityDecreaser(item)
             }
         }
       } 
-      
+
 //closes for loop
     }
 
