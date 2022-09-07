@@ -59,22 +59,42 @@ export function updateQuality(items) {
     if (!constantQuality.includes(items[i].name)) {
       item.sell_in = item.sell_in - 1;
     }
+
+    //where items expire
+    //working here first because it's a long block and I see more logic here at the bottom
     if (item.sell_in < 0) {
-      if (!agedBrie.includes(items[i].name)) {
-        if (!backstagePass.includes(items[i].name)) {
-          if (item.quality > 0) {
-            if (!constantQuality.includes(items[i].name)) {
-              item.quality = item.quality - 1
-            }
-          }
-        } else {
-          item.quality = item.quality - item.quality
-        }
-      } else {
+
+      //remove confusing negative condition, write a conditional for when it IS aged brie. 
+      //The last else statement corresponds w/ that so move it up.
+      if (agedBrie.includes(items[i].name)) {
         if (item.quality < 50) {
           item.quality = item.quality + 1
         }
       }
+
+      else if (!agedBrie.includes(items[i].name)) {
+        if (backstagePass.includes(items[i].name)) {
+        //backstage passes go to zero after concert
+        item.quality = item.quality - item.quality
+          }
+          //condition for when it IS Sufuras 
+        } else if (constantQuality.includes(items[i].name)){
+          return //return nothing: no quality change for him
+        }
+        else {
+            if (item.quality > 0) {
+            // if (!constantQuality.includes(items[i].name)) {
+              item.quality = item.quality - 1
+            }
+        }
+      } 
+      
+//closes for loop
     }
+
+//updateQuality() outermost function bracket
   }
-}
+  
+ 
+ 
+
