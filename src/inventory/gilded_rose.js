@@ -61,20 +61,16 @@ export function updateQuality(items) {
     }
 
     //where items expire
-    //Pull out items that change quality & create methods to do this instead of inline code (extract them)
-    qualityIncreaser = (item) =>{
-      item.quality = item.quality + 1
+    //combine these into quality changer--takes in a + or - number and you can get BOTH increase or decrease in quality
+    qualityUpdater = (item, change_Amount) =>{
+      item.quality = item.quality + change_Amount
     }
-
-    qualityDecreaser  = (item) =>{
-       item.quality = item.quality - 1
-    }
-
+    
     if (item.sell_in < 0) {
 
       if (agedBrie.includes(items[i].name)) {
         if (item.quality < 50) {
-        qualityIncreaser(item)
+        qualityUpdater(item, 1)
         }
       }
 
@@ -89,7 +85,7 @@ export function updateQuality(items) {
         }
         else {
             if (item.quality > 0) {
-             qualityDecreaser(item)
+             qualityUpdater(item, -1)
             }
         }
       } 
