@@ -22,6 +22,12 @@ const items = [
 updateQuality(items);
 */
 export function updateQuality(items) {
+    //combine these into quality changer--takes in a + or - number and you can get BOTH increase or decrease in quality
+    qualityUpdater = (item, change_Amount) =>{
+       if (item.quality < 50 && item.quality >0){
+      item.quality = item.quality + change_Amount
+    }
+    }
 
   for (var i = 0; i < items.length; i++) {
 
@@ -34,24 +40,18 @@ export function updateQuality(items) {
     const constantQuality = ['Sulfuras, Hand of Ragnaros'];
 
     if (!agedBrie.includes(items[i].name)&& !backstagePass.includes(items[i].name)) {
-      if (item.quality > 0) {
         if (!constantQuality.includes(items[i].name)){
-          item.quality = item.quality - 1
+          qualityUpdater(item,-1)
         }
       }
-    } else {
-      if (item.quality < 50) {
-        item.quality = item.quality + 1
+    else {
+     qualityUpdater(item, 1)
         if (backstagePass.includes(items[i].name)) {
           if (item.sell_in < 11) {
-            if (item.quality < 50) {
-              item.quality = item.quality + 1
-            }
+           qualityUpdater(item,1)
           }
           if (item.sell_in < 6) {
-            if (item.quality < 50) {
-              item.quality = item.quality + 1
-            }
+           qualityUpdater(item,1)
           }
         }
       }
@@ -61,17 +61,14 @@ export function updateQuality(items) {
     }
 
     //where items expire
-    //combine these into quality changer--takes in a + or - number and you can get BOTH increase or decrease in quality
-    qualityUpdater = (item, change_Amount) =>{
-      item.quality = item.quality + change_Amount
-    }
+  
     
     if (item.sell_in < 0) {
 
       if (agedBrie.includes(items[i].name)) {
-        if (item.quality < 50) {
+    
         qualityUpdater(item, 1)
-        }
+        
       }
 
       else if (!agedBrie.includes(items[i].name)) {
@@ -84,9 +81,9 @@ export function updateQuality(items) {
           return //return nothing: no quality change for him
         }
         else {
-            if (item.quality > 0) {
+           
              qualityUpdater(item, -1)
-            }
+            
         }
       } 
 
