@@ -21,9 +21,14 @@ const items = [
 
 updateQuality(items);
 */
+
+ const qualityIncWithAge = ['Aged Brie'];
+    const qualityIncFastAsExpiring = ['Backstage passes to a TAFKAL80ETC concert'];
+    const constantQuality = ['Sulfuras, Hand of Ragnaros'];
+
 export function updateQuality(items) {
     //combine these into quality changer--takes in a + or - number and you can get BOTH increase or decrease in quality
-    qualityUpdater = (item, change_Amount) =>{
+    const qualityUpdater = (item, change_Amount) =>{
        if (item.quality < 50 && item.quality >0){
       item.quality = item.quality + change_Amount
     }
@@ -35,18 +40,16 @@ export function updateQuality(items) {
    
     //create item variables to simplify & improve readability, decrease repetition, 
     const item = items[i]
-    const agedBrie = ['Aged Brie'];
-    const backstagePass = ['Backstage passes to a TAFKAL80ETC concert'];
-    const constantQuality = ['Sulfuras, Hand of Ragnaros'];
 
-    if (!agedBrie.includes(items[i].name)&& !backstagePass.includes(items[i].name)) {
-        if (!constantQuality.includes(items[i].name)){
+    if (!qualityIncWithAge.includes(item.name)&& !qualityIncFastAsExpiring.includes(item.name)) {
+        if (!constantQuality.includes(item.name)){
           qualityUpdater(item,-1)
         }
       }
     else {
-     qualityUpdater(item, 1)
-        if (backstagePass.includes(items[i].name)) {
+     if (item.quality < 50) {
+        item.quality = item.quality + 1
+        if (qualityIncFastAsExpiring.includes(item.name)) {
           if (item.sell_in < 11) {
            qualityUpdater(item,1)
           }
@@ -56,7 +59,7 @@ export function updateQuality(items) {
         }
       }
     }
-    if (!constantQuality.includes(items[i].name)) {
+    if (!constantQuality.includes(item.name)) {
       item.sell_in = item.sell_in - 1;
     }
 
@@ -65,19 +68,19 @@ export function updateQuality(items) {
     
     if (item.sell_in < 0) {
 
-      if (agedBrie.includes(items[i].name)) {
+      if (qualityIncWithAge.includes(item.name)) {
     
         qualityUpdater(item, 1)
         
       }
 
-      else if (!agedBrie.includes(items[i].name)) {
-        if (backstagePass.includes(items[i].name)) {
+      else if (!qualityIncWithAge.includes(item.name)) {
+        if (qualityIncFastAsExpiring.includes(item.name)) {
         //backstage passes go to zero after concert
         item.quality = item.quality - item.quality
           }
           //condition for when it IS Sufuras 
-        } else if (constantQuality.includes(items[i].name)){
+        } else if (constantQuality.includes(item.name)){
           return //return nothing: no quality change for him
         }
         else {
