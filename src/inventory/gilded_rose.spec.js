@@ -2,10 +2,18 @@ import { Item, updateQuality } from './gilded_rose';
 
 // ----Standard Item Quality----//
 describe('updateQuality', () => {
-  it('deprecates the sell in by one for a Haunted Shoe', () => {
-    const standardItem = new Item('Haunted Shoe', 10, 10);
-    updateQuality([standardItem]);
-    expect(standardItem.sell_in).toBe(9);
+  describe('when updating default item', () => {
+    it('deprecates the sell in by one', () => {
+      const standardItem = new Item('Haunted Shoe', 10, 10);
+      updateQuality([standardItem]);
+      expect(standardItem.sell_in).toBe(9);
+    });
+    // ----Quality deprecates by double for sell_in < 0----//
+    it('deprecates quality by double when sell_in<0', () => {
+      const standardItem = new Item('Haunted Shoe', 0, 5);
+      updateQuality([standardItem]);
+      expect(standardItem.quality).toBe(3);
+    });
   });
 
   // ----Aged Brie Quality increases with age----//
@@ -24,14 +32,6 @@ describe('updateQuality', () => {
     const standardItem = new Item('Aged Brie', 15, 49);
     updateQuality([standardItem]);
     expect(standardItem.quality).toBe(50);
-  });
-
-  // increase quality to 50 (shows that quality of Aged Brie can't go over 50)
-
-  it('Aged Brie quality cannot exceed 50', () => {
-    const standardItem = new Item('Aged Brie', 15, 51);
-    updateQuality([standardItem]);
-    expect(standardItem.quality).toBe(51);
   });
 
   // --- "Sulfuras"- never has to be sold nor does it decrease in quality---//
