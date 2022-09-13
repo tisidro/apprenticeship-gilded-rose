@@ -78,14 +78,15 @@ export function updateQuality(items) {
   for (var i = 0; i < items.length; i++) {
     const item = items[i];
 
-    //for Aged Brie
+    //update quality for Aged Brie
     if (item.name === 'Aged Brie') {
       //update aged brie here
       agedBrieUpdater(item);
       //stop here and go to next item in array,
       continue;
     }
-    // where we want to call default updater
+
+    //update quality for Backstage Pass
     if (!qualityIncFastAsExpiring.includes(item.name)) {
       if (!constantQuality.includes(item.name)) {
         qualityUpdater(item, -1);
@@ -94,8 +95,9 @@ export function updateQuality(items) {
       backstagePassUpdater(item);
     }
 
+    //update quality for Default Item
     if (!constantQuality.includes(item.name)) {
-      item.sell_in = item.sell_in - 1;
+      sell_inDefault(item);
     }
 
     //where items expire
