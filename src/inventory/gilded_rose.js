@@ -22,80 +22,101 @@ const items = [
 updateQuality(items);
 */
 
- const qualityIncWithAge = ['Aged Brie'];
-    const qualityIncFastAsExpiring = ['Backstage passes to a TAFKAL80ETC concert'];
-    const constantQuality = ['Sulfuras, Hand of Ragnaros'];
+const qualityIncWithAge = ["Aged Brie"];
+const qualityIncFastAsExpiring = ["Backstage passes to a TAFKAL80ETC concert"];
+const constantQuality = ["Sulfuras, Hand of Ragnaros"];
+
+const qualityUpdater = (item, change_Amount) => {
+  if (item.quality === 0) {
+    return;
+  }
+  if (item.sell_in > 0 && item.quality > 0 && item.quality <= 50) {
+    item.quality = item.quality + change_Amount;
+    return;
+  }
+  item.quality = item.quality + 2 * change_Amount;
+};
+
+const itemExpired = (item) => {
+  if (item.sell_in < 0) {
+    return true;
+  }
+};
+
+const sell_inDefault = (item) => {
+  item.sell_in = item.sell_in - 1;
+};
+
+//for Aged Brie
+const agedBrieUpdater = (item) => {
+  sell_inDefault(item);
+  item.quality = item.quality + 1;
+};
+
+//for any item
+const defaultItemUpdater = (item) => {
+  if (!qualityIncWithAge && !qualityIncFastAsExpiring && !constantQuality) {
+    qualityUpdater(item, -1);
+  }
+};
 
 export function updateQuality(items) {
-    //combine these into quality changer--takes in a + or - number and you can get BOTH increase or decrease in quality
-    const qualityUpdater = (item, change_Amount) =>{
-       if (item.quality < 50 && item.quality >0){
-      item.quality = item.quality + change_Amount
-    }
-    }
-
   for (var i = 0; i < items.length; i++) {
+    const item = items[i];
 
-   //------VARIABLES-----//
-   
-    //create item variables to simplify & improve readability, decrease repetition, 
-    const item = items[i]
+    //for Aged Brie
+    if (item.name === "Aged Brie") {
+      //update aged brie here
+      agedBrieUpdater(item);
+      //stop here and go to next item in array,
+      continue;
+    }
 
-    if (!qualityIncWithAge.includes(item.name)&& !qualityIncFastAsExpiring.includes(item.name)) {
-        if (!constantQuality.includes(item.name)){
-          qualityUpdater(item,-1)
-        }
+    //for regular items
+    //  if(item.name !== "Aged Brie"||'Backstage passes to a TAFKAL80ETC concert'||'Sulfuras, Hand of Ragnaros'){
+    //     defaultItemUpdater(item)
+    //     continue;
+    //   }
+
+    if (!qualityIncFastAsExpiring.includes(item.name)) {
+      if (!constantQuality.includes(item.name)) {
+        qualityUpdater(item, -1);
       }
-    else {
-     if (item.quality < 50) {
-        item.quality = item.quality + 1
+    } else {
+      if (item.quality < 50) {
+        item.quality = item.quality + 1;
         if (qualityIncFastAsExpiring.includes(item.name)) {
           if (item.sell_in < 11) {
-           qualityUpdater(item,1)
+            qualityUpdater(item, 1);
           }
           if (item.sell_in < 6) {
-           qualityUpdater(item,1)
+            qualityUpdater(item, 1);
           }
         }
       }
     }
+
     if (!constantQuality.includes(item.name)) {
       item.sell_in = item.sell_in - 1;
     }
 
     //where items expire
-  
-    
-    if (item.sell_in < 0) {
-
-      if (qualityIncWithAge.includes(item.name)) {
-    
-        qualityUpdater(item, 1)
-        
-      }
-
-      else if (!qualityIncWithAge.includes(item.name)) {
+    if (itemExpired(item)) {
+      if (!qualityIncWithAge.includes(item.name)) {
         if (qualityIncFastAsExpiring.includes(item.name)) {
-        //backstage passes go to zero after concert
-        item.quality = item.quality - item.quality
-          }
-          //condition for when it IS Sufuras 
-        } else if (constantQuality.includes(item.name)){
-          return //return nothing: no quality change for him
+          //backstage passes go to zero after concert
+          item.quality = item.quality - item.quality;
         }
-        else {
-           
-             qualityUpdater(item, -1)
-            
-        }
-      } 
-
-//closes for loop
+        //condition for when it IS Sufuras
+      } else if (constantQuality.includes(item.name)) {
+        return; //return nothing: no quality change for him
+      } else {
+        qualityUpdater(item, -1);
+      }
     }
 
-//updateQuality() outermost function bracket
+    //closes for loop
   }
-  
- 
- 
 
+  //updateQuality() outermost function bracket
+}
