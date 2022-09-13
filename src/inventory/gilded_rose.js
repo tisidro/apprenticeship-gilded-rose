@@ -22,9 +22,9 @@ const items = [
 updateQuality(items);
 */
 
-const qualityIncWithAge = ["Aged Brie"];
-const qualityIncFastAsExpiring = ["Backstage passes to a TAFKAL80ETC concert"];
-const constantQuality = ["Sulfuras, Hand of Ragnaros"];
+const qualityIncWithAge = ['Aged Brie'];
+const qualityIncFastAsExpiring = ['Backstage passes to a TAFKAL80ETC concert'];
+const constantQuality = ['Sulfuras, Hand of Ragnaros'];
 
 const qualityUpdater = (item, change_Amount) => {
   if (item.quality === 0) {
@@ -53,10 +53,24 @@ const agedBrieUpdater = (item) => {
   item.quality = item.quality + 1;
 };
 
+//for Backstage Pass
+const backstagePassUpdater = (item) => {
+  // if (item.quality < 50) {
+  if (item.sell_in < 6) {
+    qualityUpdater(item, 3);
+  } else if (item.sell_in < 11) {
+    qualityUpdater(item, 2);
+  } else {
+    qualityUpdater(item, 1);
+  }
+};
+
+// }
+
 //for any item
 const defaultItemUpdater = (item) => {
   if (!qualityIncWithAge && !qualityIncFastAsExpiring && !constantQuality) {
-    qualityUpdater(item, -1);
+    item.quality = item.quality - 1;
   }
 };
 
@@ -65,35 +79,19 @@ export function updateQuality(items) {
     const item = items[i];
 
     //for Aged Brie
-    if (item.name === "Aged Brie") {
+    if (item.name === 'Aged Brie') {
       //update aged brie here
       agedBrieUpdater(item);
       //stop here and go to next item in array,
       continue;
     }
-
-    //for regular items
-    //  if(item.name !== "Aged Brie"||'Backstage passes to a TAFKAL80ETC concert'||'Sulfuras, Hand of Ragnaros'){
-    //     defaultItemUpdater(item)
-    //     continue;
-    //   }
-
+    // where we want to call default updater
     if (!qualityIncFastAsExpiring.includes(item.name)) {
       if (!constantQuality.includes(item.name)) {
         qualityUpdater(item, -1);
       }
-    } else {
-      if (item.quality < 50) {
-        item.quality = item.quality + 1;
-        if (qualityIncFastAsExpiring.includes(item.name)) {
-          if (item.sell_in < 11) {
-            qualityUpdater(item, 1);
-          }
-          if (item.sell_in < 6) {
-            qualityUpdater(item, 1);
-          }
-        }
-      }
+    } else if (item.quality < 50) {
+      backstagePassUpdater(item);
     }
 
     if (!constantQuality.includes(item.name)) {
