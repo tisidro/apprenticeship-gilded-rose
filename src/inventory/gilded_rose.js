@@ -21,6 +21,7 @@ const items = [
 
 updateQuality(items);
 */
+////-----STILL to DO: get conjured item working/tests passing and in updateQuality pull out functionality for update default item and update Sulfuras
 
 const qualityIncWithAge = ['Aged Brie'];
 const qualityIncFastAsExpiring = ['Backstage passes to a TAFKAL80ETC concert'];
@@ -33,10 +34,12 @@ const qualityUpdater = (item, change_Amount) => {
   if (item.sell_in > 0 && item.quality > 0 && item.quality <= 50) {
     item.quality = item.quality + change_Amount;
     return;
+  } 
+  if (item.sell_in < 0) {
+    item.quality = item.quality - 2 * (change_Amount);
+    return;
   }
-  item.quality = item.quality + 2 * change_Amount;
 };
-
 const itemExpired = (item) => {
   if (item.sell_in < 0) {
     return true;
@@ -47,15 +50,16 @@ const sell_inDefault = (item) => {
   item.sell_in = item.sell_in - 1;
 };
 
+
 //for Aged Brie
 const agedBrieUpdater = (item) => {
-  sell_inDefault(item);
-  item.quality = item.quality + 1;
-};
+  if (item.quality < 50){
+  qualityUpdater(item, 1);
+}
+}
 
 //for Backstage Pass
 const backstagePassUpdater = (item) => {
-  // if (item.quality < 50) {
   if (item.sell_in < 6) {
     qualityUpdater(item, 3);
   } else if (item.sell_in < 11) {
@@ -65,19 +69,22 @@ const backstagePassUpdater = (item) => {
   }
 };
 
-// }
+//for conjured item
+const conjuredItemUpdater = (item) => {
+  qualityUpdater(item, -2);
+}
 
-//for any item
+//for default item
 const defaultItemUpdater = (item) => {
   if (!qualityIncWithAge && !qualityIncFastAsExpiring && !constantQuality) {
-    item.quality = item.quality - 1;
-  }
-};
+    qualityUpdater(item, 1);
+  };
+}
 
 export function updateQuality(items) {
   for (var i = 0; i < items.length; i++) {
     const item = items[i];
-
+ 
     //update quality for Aged Brie
     if (item.name === 'Aged Brie') {
       //update aged brie here
@@ -86,16 +93,24 @@ export function updateQuality(items) {
       continue;
     }
 
+       
+    //update quality for Conjured Item
+    if (item.name === 'Conjured Item'){
+      conjuredItemUpdater(item);
+      continue;
+    }
+
     //update quality for Backstage Pass
     if (!qualityIncFastAsExpiring.includes(item.name)) {
       if (!constantQuality.includes(item.name)) {
         qualityUpdater(item, -1);
+        
       }
     } else if (item.quality < 50) {
       backstagePassUpdater(item);
-    }
+    } 
 
-    //update quality for Default Item
+    //sell_in for all items (decrease by one each day)
     if (!constantQuality.includes(item.name)) {
       sell_inDefault(item);
     }
@@ -110,13 +125,12 @@ export function updateQuality(items) {
         //condition for when it IS Sufuras
       } else if (constantQuality.includes(item.name)) {
         return; //return nothing: no quality change for him
-      } else {
-        qualityUpdater(item, -1);
-      }
+      } 
+      //default items
+      qualityUpdater(item, 1);
+     
     }
 
-    //closes for loop
   }
 
-  //updateQuality() outermost function bracket
 }

@@ -10,9 +10,9 @@ describe('updateQuality', () => {
     });
     // ----Quality deprecates by double for sell_in < 0----//
     it('deprecates quality by double when sell_in<0', () => {
-      const standardItem = new Item('Haunted Shoe', 0, 5);
+      const standardItem = new Item('Haunted Shoe', 0, 7);
       updateQuality([standardItem]);
-      expect(standardItem.quality).toBe(3);
+      expect(standardItem.quality).toBe(5);
     });
   });
 
@@ -20,15 +20,14 @@ describe('updateQuality', () => {
   // increase sell_in to 3 and quality to 1 --passes
   describe('when updating Aged Brie', () => {
     it('increase quality of Aged Brie with age', () => {
-      const standardItem = new Item('Aged Brie', 3, 0);
+      const standardItem = new Item('Aged Brie', 3, 4);
       updateQuality([standardItem]);
-      expect(standardItem.quality).toBe(1);
+      expect(standardItem.quality).toBe(5);
     });
 
     // ----Quality of item is never >50----//
-    // increase quality to 49 --passes
-    it('increase quality of Aged Brie with age', () => {
-      const standardItem = new Item('Aged Brie', 15, 49);
+    it('max quality of Aged Brie is 50', () => {
+      const standardItem = new Item('Aged Brie', 15, 50);
       updateQuality([standardItem]);
       expect(standardItem.quality).toBe(50);
     });
@@ -124,5 +123,14 @@ describe('updateQuality', () => {
     updateQuality([standardItem]);
 
     expect(standardItem.quality).toBe(6);
+  });
+
+  // Conjured Item Test
+  describe('when updating conjured item', () => {
+    it('deprecates the quality by double', () => {
+      const standardItem = new Item('Conjured Item', 10, 30);
+      updateQuality([standardItem]);
+      expect(standardItem.quality).toBe(28);
+    });
   });
 });
