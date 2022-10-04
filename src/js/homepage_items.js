@@ -35,10 +35,21 @@ const bindEventListenToUpdateButton = (items) => {
   });
 };
 
+const bindEventListenToResetButton = () => {
+  const updateReset = document.getElementById('reset-inv-button');
+  updateReset.addEventListener('click', (e) => {
+    e.preventDefault();
+    // resets to object of default items
+    renderItemsOnHomepage(getNewItems());
+  });
+};
+
 const showItemsOnHomePage = () => {
   const items = getNewItems();
   renderItemsOnHomepage(items);
   bindEventListenToUpdateButton(items);
+  // no items passed in, it's resetting to default
+  bindEventListenToResetButton();
 };
 
 showItemsOnHomePage();
