@@ -21,7 +21,6 @@ const items = [
 
 updateQuality(items);
 */
-////-----STILL to DO: get conjured item working/tests passing and in updateQuality pull out functionality for update default item and update Sulfuras
 
 const qualityIncWithAge = ['Aged Brie'];
 const qualityIncFastAsExpiring = ['Backstage passes to a TAFKAL80ETC concert'];
@@ -62,11 +61,14 @@ const agedBrieUpdater = (item) => {
 const backstagePassUpdater = (item) => {
   if (item.sell_in < 6) {
     qualityUpdater(item, 3);
-  } else if (item.sell_in < 11) {
+    return
+  } 
+  if (item.sell_in < 11) {
     qualityUpdater(item, 2);
-  } else {
+    return
+  } 
     qualityUpdater(item, 1);
-  }
+ 
 };
 
 //for conjured item
@@ -84,7 +86,11 @@ const defaultItemUpdater = (item) => {
 export function updateQuality(items) {
   for (var i = 0; i < items.length; i++) {
     const item = items[i];
- 
+    
+    if (item.name === 'Sulfuras'){
+      continue;
+    }
+
     //update quality for Aged Brie
     if (item.name === 'Aged Brie') {
       //update aged brie here
@@ -101,14 +107,19 @@ export function updateQuality(items) {
     }
 
     //update quality for Backstage Pass
+    if (item.name === 'Backstage passes to a TAFKAL80ETC concert'){
+      if (item.quality < 50) {
+      backstagePassUpdater(item);
+      }
+      qualityUpdater(item, -1);
+    }
+
     if (!qualityIncFastAsExpiring.includes(item.name)) {
       if (!constantQuality.includes(item.name)) {
         qualityUpdater(item, -1);
         
       }
-    } else if (item.quality < 50) {
-      backstagePassUpdater(item);
-    } 
+     } 
 
     //sell_in for all items (decrease by one each day)
     if (!constantQuality.includes(item.name)) {
@@ -117,15 +128,13 @@ export function updateQuality(items) {
 
     //where items expire
     if (itemExpired(item)) {
-      if (!qualityIncWithAge.includes(item.name)) {
+      
         if (qualityIncFastAsExpiring.includes(item.name)) {
           //backstage passes go to zero after concert
           item.quality = item.quality - item.quality;
         }
-        //condition for when it IS Sufuras
-      } else if (constantQuality.includes(item.name)) {
-        return; //return nothing: no quality change for him
-      } 
+        
+      
       //default items
       qualityUpdater(item, 1);
      
