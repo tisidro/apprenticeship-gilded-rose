@@ -34,9 +34,9 @@ const qualityUpdater = (item, change_Amount) => {
   if (item.sell_in > 0 && item.quality > 0 && item.quality <= 50) {
     item.quality = item.quality + change_Amount;
     return;
-  } 
+  }
   if (item.sell_in < 0) {
-    item.quality = item.quality - 2 * (change_Amount);
+    item.quality = item.quality - 2 * change_Amount;
     return;
   }
 };
@@ -50,16 +50,23 @@ const sell_inDefault = (item) => {
   item.sell_in = item.sell_in - 1;
 };
 
-
 //for Aged Brie
 const agedBrieUpdater = (item) => {
-  if (item.quality < 50){
-  qualityUpdater(item, 1);
-}
-}
+  if (item.quality < 50) {
+    qualityUpdater(item, 1);
+  }
+};
 
 //for Backstage Pass
 const backstagePassUpdater = (item) => {
+  sell_inDefault(item);
+  if (item.sell_in <= 0) {
+    item.quality = 0;
+    return;
+  }
+  if (item.quality >= 50) {
+    return;
+  }
   if (item.sell_in < 6) {
     qualityUpdater(item, 3);
   } else if (item.sell_in < 11) {
@@ -72,19 +79,24 @@ const backstagePassUpdater = (item) => {
 //for conjured item
 const conjuredItemUpdater = (item) => {
   qualityUpdater(item, -2);
-}
+};
 
 //for default item
 const defaultItemUpdater = (item) => {
   if (!qualityIncWithAge && !qualityIncFastAsExpiring && !constantQuality) {
     qualityUpdater(item, 1);
-  };
-}
+  }
+};
 
 export function updateQuality(items) {
   for (var i = 0; i < items.length; i++) {
     const item = items[i];
- 
+
+    //update Sulfuras
+    if (item.name === 'Sulfuras, Hand of Ragnaros') {
+      continue;
+    }
+
     //update quality for Aged Brie
     if (item.name === 'Aged Brie') {
       //update aged brie here
@@ -93,44 +105,25 @@ export function updateQuality(items) {
       continue;
     }
 
-       
     //update quality for Conjured Item
-    if (item.name === 'Conjured Item'){
+    if (item.name === 'Conjured Item') {
       conjuredItemUpdater(item);
       continue;
     }
 
     //update quality for Backstage Pass
-    if (!qualityIncFastAsExpiring.includes(item.name)) {
-      if (!constantQuality.includes(item.name)) {
-        qualityUpdater(item, -1);
-        
-      }
-    } else if (item.quality < 50) {
+    if (item.name === 'Backstage passes to a TAFKAL80ETC concert') {
       backstagePassUpdater(item);
-    } 
+      continue;
+    }
+    qualityUpdater(item, -1);
 
     //sell_in for all items (decrease by one each day)
-    if (!constantQuality.includes(item.name)) {
-      sell_inDefault(item);
-    }
+    sell_inDefault(item);
 
     //where items expire
     if (itemExpired(item)) {
-      if (!qualityIncWithAge.includes(item.name)) {
-        if (qualityIncFastAsExpiring.includes(item.name)) {
-          //backstage passes go to zero after concert
-          item.quality = item.quality - item.quality;
-        }
-        //condition for when it IS Sufuras
-      } else if (constantQuality.includes(item.name)) {
-        return; //return nothing: no quality change for him
-      } 
-      //default items
       qualityUpdater(item, 1);
-     
     }
-
   }
-
 }
